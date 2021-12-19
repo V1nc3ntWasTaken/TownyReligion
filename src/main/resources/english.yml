@@ -1,0 +1,91 @@
+name: 'TownyReligion'
+version: '0.01'
+language: 'english'
+author: 'V1nc3ntWasTaken'
+website: 'https://crusade-craft.com'
+description: >
+  Language file for all game messages.  Do not alter this file.
+  If you wish to change any of the entries, make a copy named something else.
+  Alternate language files can be enabled by altering the
+  [language] entry in config.yml
+  e.g. language: FILENAME.yml
+#
+#
+#         You MUST retain spacing in the texts.
+#  If a text begins or ends with a space, it must remain that way.
+#
+#
+#       %s = data to be supplied by the plugin.
+
+# Text colouring
+# --------------
+# Black = &0, Navy = &1, Green = &2, Blue = &3, Red = &4
+# Purple = &5, Gold = &6, LightGray = &7, Gray = &8
+# DarkPurple = &9, LightGreen = &a, LightBlue = &b
+# Rose = &c, LightPurple = &d, Yellow = &e, White = &f
+
+#basics
+plugin_prefix: '&6[TownyReligion] '
+msg_err_flatfile_cannot_create_defaults: 'Could not create flatfile default files and folders.'
+
+#town screen
+status_town_religion: '&2Religion: &a%s'
+
+#religion setting
+msg_religion_msg: '&6[%s] '
+msg_religion_set: '&bThe new town religion is %s.'
+msg_religion_remove: '&bThe town is no longer involved in a religion.'
+msg_religion_town_left: '&bThe town of %s left the religion.'
+msg_religion_town_join: '&bThe town of %s joined the religion.'
+msg_religion_ownership_changed: '&bOverseer town of religion changed to %s.'
+msg_religion_board_remove: '&bReligion message board removed.'
+msg_religion_board_set: '&bReligion message board changed.'
+msg_religion_rename: '&bReligion name set to %s.'
+msg_religion_toggle_public: '&bThe religion''s public status is now %s.'
+
+msg_err_disabled: '&cTownyReligion is disabled. Refer to console.'
+msg_err_no_perms: '&cYou don''t have enough permissions for that command.'
+msg_err_no_name: '&cPlease specify the religion name.'
+msg_err_name_in_use: '&cThat religion name is already in use.'
+msg_err_religion_name_too_long: '&cReligion name too long. It can''t be over %s characters.'
+msg_err_religion_name_too_short: '&cReligion name too short. It can''t be under %s characters.'
+msg_err_town_not_provided: '&cPlease specify the town name.'
+msg_err_no_town: '&cYou don''t belong to a town.'
+msg_err_town_no_religion: '&cTown doesn''t belong to any religion.'
+msg_err_town_not_in_religion: '&cTown specified not in religion.'
+msg_err_religion_not_registered: '&c%s is not registered.'
+msg_err_already_has_religion: '&cTown religion already registered.'
+msg_err_insufficient_funds: '&cThe town bank doesn''t have enough money to do this action. This action requires %s. You need %s more.'
+msg_err_invalid_characters: '&cInvalid text. Does the name contain any abnormal characters?'
+msg_err_leave_religion_you_own: '&cYou cannot leave a religion that you own.'
+msg_err_self_oversee_assignment: '&cThe overseeing town is already %s.'
+msg_err_plugin_deny: '&cThe event was canceled from a third party plugin.'
+msg_err_board_too_long: '&cReligion board too long. It can''t be over %s characters.'
+msg_err_board_too_short: '&cReligion board too short. It can''t be under %s characters.'
+msg_err_not_public: '&cThe religion %s does not currently have it''s doors open to the public.'
+msg_err_not_in_religion: '&cYou don''t belong to a religion.'
+msg_err_no_town_name: '&cPlease specify the town name.'
+msg_err_town_non_existent: '&cThat town does not exist.'
+msg_err_town_belongs_to_other_religion: '&c%s already has a religion.'
+
+msg_global_new_religion: '&bThe religion of %s has been established by the town %s!'
+msg_global_delete_religion: '&bThe religion of %s, overseen by %s has been disbanded.'
+
+#status
+status_religion: 'Religion:'
+status_overseer: 'Overseer:'
+
+#global
+
+#chat
+religion_chat_message: '&f[&5Religion&f] &f[&6%s&f] %s: &d%s'
+
+#admin
+admin_help_1: 'Reload the config, language and flatfile.'
+config_and_lang_file_reloaded_successfully: 'Config and Language file reloaded successfully.'
+config_and_lang_file_could_not_be_loaded: 'Config and language reload unsuccessful. See console for details.'
+flatfile_database_reloaded_successfully: 'Flatfile database reloaded successfully.'
+flatfile_database_could_not_be_loaded: 'Flatfile reload unsuccessful. See console for details.'
+msg_all_town_religion_set: '&bReligion of all towns set to %s'
+msg_specific_town_sulture_set: '&bReligion of town %s set to %s'
+msg_err_town_not_registered: '&cTown %s is not registered.'

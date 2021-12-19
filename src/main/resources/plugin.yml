@@ -1,0 +1,221 @@
+name: ${project.artifactId}
+main: ${project.groupId}.${project.name}.${project.artifactId}
+version: ${project.version}
+api-version: ${project.bukkitAPIVersion}
+author: [V1nc3ntWasTaken]
+website: https://crusade-craft.com
+prefix: ${project.artifactId}
+depend: [Towny]
+
+description: A religion system made by V1nc3ntWasTaken
+
+commands:
+  religion:
+    aliases: [rel]
+  religionadmin:
+    aliases: [reladmin,rela,ra]
+  religionchat:
+    aliases: [religionc,rc]
+
+permissions:
+  # Permissions for mayor:
+  # - townyreligion.religion.*
+  # Permissions for everyone:
+  # - townyreligion.religion
+
+  # Use all commands
+  # Bypass all restrictions
+  townyreligion.*:
+    description: User is able to access all commands and bypass all restrictions in TownyReligion. (for town safety, this should be granted to no one)
+    default: false
+    children:
+      townyreligion.religion.*: true
+
+  # Use all commands after /religion
+  townyreligion.religion.*:
+    description: User is able to access all sub-commands in /religion. (usually town mayors or assistants)
+    default: false
+    children:
+      townyreligion.religion: true
+      townyreligion.religion.new: true
+      townyreligion.religion.delete: true
+      townyreligion.religion.leave: true
+      townyreligion.religion.invite: true
+      townyreligion.religion.set.*: true
+      townyreligion.religion.toggle.*: true
+      townyreligion.religion.join: true
+
+  # Use /religion command
+  townyreligion.religion:
+    description: User is able to use the /rel command. (usually all users)
+    default: true
+
+  # Requires townyreligion.religion to work
+  # Use /religion new command
+  townyreligion.religion.new:
+    description: User is able to create a new religion. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Requires townyreligion.religion.new to work
+  # Bypass all religion creation restriction
+  townyreligion.religion.new.bypass.*:
+    description: User is able to bypass all new religion restrictions. (usually moderators or admins)
+    default: false
+    children:
+      townyreligion.religion.new.bypass.no_cost: true
+
+  # Requires townyreligion.religion to work
+  # Requires townyreligion.religion.new to work
+  # Bypass new religion cost restriction
+  townyreligion.religion.new.bypass.no_cost:
+    description: User is able to create a new religion free of charge. (usually moderators or admins)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Use /religion delete command
+  townyreligion.religion.delete:
+    description: User is able to delete a religion. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Use /religion leave command
+  townyreligion.religion.leave:
+    description: User is able to leave (not delete) a religion. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Use /religion invite command
+  townyreligion.religion.invite:
+    description: User is able to invite towns to a religion. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Use all commands after /religion set
+  townyreligion.religion.set.*:
+    description: User is able to use all /rel set commands. (usually town mayors or assistants)
+    default: false
+    children:
+      townyreligion.religion.set.name: true
+      townyreligion.religion.set.board: true
+      townyreligion.religion.set.overseer: true
+
+  # Requires townyreligion.religion to work
+  # Use /religion set name command
+  townyreligion.religion.set.name:
+    description: User is able to set the name of their religion. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Requires townyreligion.religion.set.name to work
+  # Bypass all religion name restrictions
+  townyreligion.religion.set.name.bypass.*:
+    description: User is able to bypass all religion name restrictions. (usually moderators or admins)
+    default: false
+    children:
+      townyreligion.religion.set.name.bypass.max_length: true
+      townyreligion.religion.set.name.bypass.min_length: true
+      townyreligion.religion.set.namy.bypass.cost: true
+
+  # Requires townyreligion.religion to work
+  # Requires townyreligion.religion.set.name to work
+  # Bypass religion name max length restriction
+  townyreligion.religion.set.name.bypass.max_length:
+    description: User is able to set the name of a religion, bypassing the maximum length restriction. (usually moderators or admins)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Requires townyreligion.religion.set.name to work
+  # Bypass religion name min length restriction
+  townyreligion.religion.set.name.bypass.min_length:
+    description: User is able to set the name of a religion, bypassing the minimum length restriction. (usually moderators or admins)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Requires townyreligion.religion.set.name to work
+  # Bypass religion name cost restriction
+  townyreligion.religion.set.name.bypass.cost:
+    description: User is able to set the name of a religion, bypassing the cost restriction. (usually moderators or admins)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Use /religion set board command
+  townyreligion.religion.set.board:
+    description: User is able to set the board of a religion. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Requires townyreligion.religion.set.board to work
+  # Bypass all religion board restrictions
+  townyreligion.religion.set.board.bypass.*:
+    description: User is able to bypass all religion board restrictions. (usually moderators or admins)
+    default: false
+    children:
+      townyreligion.religion.set.board.bypass.max_length: true
+      townyreligion.religion.set.board.bypass.min_length: true
+
+  # Requires townyreligion.religion to work
+  # Requires townyreligion.religion.set.board to work
+  # Bypass religion board max length restriction
+  townyreligion.religion.set.board.bypass.max_length:
+    description: User is able to set the board of a religion, bypassing the maximum length restriction. (usually moderators or admins)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Requires townyreligion.religion.set.board to work
+  # Bypass religion board min length restriction
+  townyreligion.religion.set.board.bypass.min_length:
+    description: User is able to set the board of a religion, bypassing the minimum length restriction. (usually moderators or admins)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Use /religion set overseer command
+  townyreligion.religion.set.overseer:
+    description: User is able to set the overseer of a religion. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Use all commands after /religion toggle
+  townyreligion.religion.toggle.*:
+    description: User is able to use all /rel toggle commands. (usually town mayors or assistants)
+    default: false
+    children:
+      townyreligion.religion.toggle.public: true
+
+  # Requires townyreligion.religion to work
+  # Use /religion toggle public command
+  townyreligion.religion.toggle.public:
+    description: User is able to toggle the public status of a religion. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Use /religion join command
+  townyreligion.religion.join:
+    description: User is able to join another religion that is public. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Requires townyreligion.religion.join to work
+  # Bypass all religion join restrictions
+  townyreligion.religion.join.bypass.*:
+    description: User is able to join another religion, without any restrictions. (usually moderators or admins)
+    default: false
+    children:
+      townyreligion.religion.join.bypass.public_check: true
+
+  # Requires townyreligion.religion to work
+  # Requires townyreligion.religion.join to work
+  # Bypass non-public religion restriction
+  townyreligion.religion.join.bypass.public_check:
+    description: User is able to join another religion, regardless of the public status. (usually moderators or admins)
+    default: false
+
+
+
+#  townyreligion.admin:
+#    description: User is able to use all TownyReligion commands.
+#    default: op
+#    children:
+#      townyreligion.admin.reload: true
+#      townyreligion.admin.alltowns: true
+#      townyreligion.admin.town: true
