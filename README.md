@@ -9,7 +9,7 @@ REQUIREMENTS
     - Download this customized version of Towny **(Required to handle and modify the TownyAPI)**:  https://github.com/V1nc3ntWasTaken/Towny/releases
 - Without SiegeWar
     - Download this customized version of Towny **(Required to handle and modify the TownyAPI)**:  https://github.com/V1nc3ntWasTaken/SiegeWar/releases
-- All the above are kept up to date.
+- All the above are **NOT REQUIRED** as of now.
 
 FEATURES
 - Towns can create their own religions.
