@@ -22,7 +22,7 @@ COMMANDS
     - `/religion` - As a mayor, interface with the religion your town is in. As a player, view your religions status.
 
 INSTALLATION STEPS
-1. Download the TownyCultures jar file here: https://github.com/V1nc3ntWasTaken/TownyReligion/releases
+1. Download the TownyReligion jar file here: https://github.com/V1nc3ntWasTaken/TownyReligion/releases
 2. Drop the jar file into your normal plugins folder.
 3. Stop your server.
 4. Start your server.
