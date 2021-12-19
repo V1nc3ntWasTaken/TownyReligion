@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.crusadecraft</groupId>
     <artifactId>TownyReligion</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.0-alpha</version>
     <name>townyreligion</name> <!-- Leave lower-cased -->
 
     <properties>
