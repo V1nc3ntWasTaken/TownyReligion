@@ -51,7 +51,7 @@
 <dependency>
   <groupId>com.crusadecraft</groupId>
   <artifactId>townyreligion</artifactId>
-  <version>VERSION-OF_CHOICE</version>
+  <version>VERSION-OF-CHOICE</version>
 </dependency>
 ```
 2. Run `mvn install`
