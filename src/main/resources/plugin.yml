@@ -1,4 +1,4 @@
-name: ${project.artifactId}
+name: TownyReligion
 main: ${project.groupId}.${project.name}.${project.artifactId}
 version: ${project.version}
 api-version: ${project.bukkitAPIVersion}
