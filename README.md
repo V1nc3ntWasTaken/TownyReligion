@@ -42,16 +42,3 @@
    `- townyreligion.religion`.
 6. Restart your server.
 7. That's it.
-
----
-
-## DEVELOPERS
-1. Add the following to your `pom.xml`
-```xml
-<dependency>
-  <groupId>com.crusadecraft</groupId>
-  <artifactId>townyreligion</artifactId>
-  <version>VERSION-OF-CHOICE</version>
-</dependency>
-```
-2. Run `mvn install`
