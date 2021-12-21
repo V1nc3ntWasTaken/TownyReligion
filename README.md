@@ -2,17 +2,7 @@
 <h1>TownyReligion</h1>
 
 ## INTRODUCTION
-- TownyReligion is an add on plugin for Towny and SiegeWar, which enables "religions" on Towny servers (SiegeWar optional)
-
----
-
-## REQUIREMENTS
-- With SiegeWar
-    - Download this customized version of SiegeWar **(Required to interface with TownyReligion)**:  https://github.com/V1nc3ntWasTaken/SiegeWar/releases
-    - Download this customized version of Towny **(Required to handle and modify the TownyAPI)**:  https://github.com/V1nc3ntWasTaken/Towny/releases
-- Without SiegeWar
-    - Download this customized version of Towny **(Required to handle and modify the TownyAPI)**:  https://github.com/V1nc3ntWasTaken/SiegeWar/releases
-- All the above are **NOT REQUIRED** as of now.
+- TownyReligion is an add on plugin for Towny and SiegeWar, which enables "religions" on Towny servers (SiegeWar optional) 
 
 ---
 
