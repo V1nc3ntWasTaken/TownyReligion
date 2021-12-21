@@ -36,8 +36,10 @@
 3. Stop your server.
 4. Start your server.
 5. Edit your townyperms.yml file in the Towny/settings folder.
+  
    Add the following permission for mayors (& other ranks if appropriate):
    `- townyreligion.religion.*`.
+   
    Add the following permission for all users:
    `- townyreligion.religion`.
 6. Restart your server.
