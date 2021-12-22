@@ -19,6 +19,8 @@ import org.bukkit.entity.Player;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 // import java.util.Collections;
 
 public class ReligionUtils {
@@ -280,4 +282,21 @@ public class ReligionUtils {
 		array[i] = com.palmergames.bukkit.towny.object.Translation.of("status_town_reslist_overlength");
 		return array;
 	}*/
+
+	public static List<Player> getOnlinePlayers(Religion religion) {
+		List<Player> list = new ArrayList<>(Bukkit.getOnlinePlayers());
+		List<Player> finalList = new ArrayList<>();
+
+		list.forEach(player -> {
+			if (TownyAPI.getInstance().getResident(player.getName()) != null &&
+					TownyAPI.getInstance().getResident(player.getName()).hasTown()) {
+				religion.getTownNames().forEach(townName -> {
+					if (TownyAPI.getInstance().getTown(townName).hasResident(player.getName()))
+						finalList.add(player);
+				});
+			}
+		});
+
+		return finalList;
+	}
 }
