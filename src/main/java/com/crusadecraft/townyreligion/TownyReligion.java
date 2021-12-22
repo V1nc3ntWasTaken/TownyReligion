@@ -8,6 +8,7 @@ import com.crusadecraft.townyreligion.listeners.TownEventListener;
 import com.crusadecraft.townyreligion.settings.Settings;
 import com.crusadecraft.townyreligion.settings.TownyReligionSettings;
 import com.crusadecraft.townyreligion.utils.ReligionUtils;
+import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.util.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -39,6 +40,16 @@ public final class TownyReligion extends JavaPlugin {
             setSafeModeEnabled(true);
             return;
         } else {
+            try {
+                TownyAPI.isCustomVersion();
+            } catch (NoSuchMethodError ignored) {
+                severe("Your Towny version is not available for this plugin.");
+                severe("Please update Towny to 0.97.5.3.3 and restart your server.");
+                severe("https://github.com/V1nc3ntWasTaken/Towny/releases/tag/0.97.5.3.3");
+                setSafeModeEnabled(true);
+                return;
+            }
+
             info("Towny version " + getTownyVersion() + " found.");
         }
 
