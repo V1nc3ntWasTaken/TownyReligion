@@ -1,7 +1,6 @@
 package com.crusadecraft.townyreligion;
 
 import com.crusadecraft.townyreligion.command.ReligionAdminCommand;
-import com.crusadecraft.townyreligion.command.ReligionChatCommand;
 import com.crusadecraft.townyreligion.command.ReligionCommand;
 import com.crusadecraft.townyreligion.listeners.ResidentEventListener;
 import com.crusadecraft.townyreligion.listeners.TownEventListener;
@@ -117,7 +116,6 @@ public final class TownyReligion extends JavaPlugin {
     private void registerCommands() {
         getCommand("religion").setExecutor(new ReligionCommand());
         getCommand("religionadmin").setExecutor(new ReligionAdminCommand());
-        getCommand("rc").setExecutor(new ReligionChatCommand());
     }
 
     public static void registerDatabase() {

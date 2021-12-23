@@ -14,8 +14,6 @@ commands:
     aliases: [rel]
   religionadmin:
     aliases: [reladmin,rela,ra]
-  religionchat:
-    aliases: [religionc,rc]
 
 permissions:
   # Permissions for mayor:
