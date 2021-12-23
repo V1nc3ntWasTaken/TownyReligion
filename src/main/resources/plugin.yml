@@ -1,10 +1,10 @@
 name: TownyReligion
-main: ${project.groupId}.${project.name}.${project.artifactId}
+main: ${project.groupId}.${project.name}.TownyReligion
 version: ${project.version}
 api-version: ${project.bukkitAPIVersion}
 author: [V1nc3ntWasTaken]
 website: https://crusade-craft.com
-prefix: ${project.artifactId}
+prefix: TownyReligion
 depend: [Towny]
 
 description: A religion system made by V1nc3ntWasTaken
