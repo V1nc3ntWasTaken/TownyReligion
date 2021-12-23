@@ -110,8 +110,7 @@ public class ReligionUtils {
 				boardMsg.equalsIgnoreCase("name=") ||
 						boardMsg.equalsIgnoreCase("timeEstablished=") ||
 						boardMsg.equalsIgnoreCase("towns=") ||
-						//TODO Change this to 'overseeingTown'
-						boardMsg.equalsIgnoreCase("ownerTown=") ||
+						boardMsg.equalsIgnoreCase("overseeingTown=") ||
 						boardMsg.equalsIgnoreCase("inviteOnly=") ||
 						boardMsg.equalsIgnoreCase("boardMsg=") ||
 						boardMsg.equalsIgnoreCase("allyList=") ||
