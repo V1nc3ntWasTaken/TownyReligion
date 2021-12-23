@@ -1,6 +1,7 @@
 package com.crusadecraft.townyreligion.command;
 
 import com.crusadecraft.townyreligion.Messaging;
+import com.crusadecraft.townyreligion.TownyReligion;
 import com.crusadecraft.townyreligion.metadata.TownMetaDataController;
 import com.crusadecraft.townyreligion.settings.Translation;
 import com.crusadecraft.townyreligion.utils.ReligionUtils;
@@ -30,6 +31,11 @@ public class ReligionChatCommand implements CommandExecutor, TabCompleter {
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+		if (TownyReligion.getSafeModeEnabled()) {
+			Messaging.sendErrorMsg(sender, "TownyReligion is in safe mode. Check the console for details, and try executing /ra reload");
+			return false;
+		}
+
 		if (sender instanceof Player && args.length > 0)
 			parseReligionCommunicationCommand((Player) sender, args);
 		else

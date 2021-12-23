@@ -11,16 +11,19 @@ import com.crusadecraft.townyreligion.utils.ReligionUtils;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.util.Version;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.logging.Level;
+
 public final class TownyReligion extends JavaPlugin {
 
     private static TownyReligion plugin;
     public static String prefix = "[TownyReligion] ";
-    private final Version requiredTownyVersion = Version.fromString("0.97.5.1");
+    private static final Version requiredTownyVersion = Version.fromString("0.97.5.3.3");
     public static boolean safeModeEnabled = false;
 
     public static TownyReligion getTownyReligion() {
@@ -37,26 +40,29 @@ public final class TownyReligion extends JavaPlugin {
         if (!townyVersionCheck(getTownyVersion())) {
             severe("Your Towny version does not meet required minimum version: " + requiredTownyVersion.toString() + ". Instead, found version: " + getTownyVersion().toString() + ".");
             severe("Please update Towny and restart your server.");
+            severe("https://github.com/V1nc3ntWasTaken/Towny/releases/tag/0.97.5.3.3");
             setSafeModeEnabled(true);
-            return;
         } else {
             try {
                 TownyAPI.isCustomVersion();
             } catch (NoSuchMethodError ignored) {
                 severe("Your Towny version is not available for this plugin.");
-                severe("Please update Towny to 0.97.5.3.3 and restart your server.");
+                severe("Please update Towny to Custom Towny 0.97.5.3.3 and restart your server.");
                 severe("https://github.com/V1nc3ntWasTaken/Towny/releases/tag/0.97.5.3.3");
                 setSafeModeEnabled(true);
-                return;
             }
 
-            info("Towny version " + getTownyVersion() + " found.");
+            if (!getSafeModeEnabled()) {
+                info("Towny version " + getTownyVersion() + " found.");
+            }
         }
 
+
         if (!Settings.loadSettingsAndLang()) {
-            severe("An error occurred while loading the settings and language files!");
-            setSafeModeEnabled(true);
-            return;
+            if (!getSafeModeEnabled()) {
+                severe("An error occurred while loading the settings and language files!");
+                setSafeModeEnabled(true);
+            }
         }
 
         // InviteHandler.initialize(this);
@@ -69,9 +75,13 @@ public final class TownyReligion extends JavaPlugin {
 
             registerDatabase();
 
-            info("TownyReligion was successfully loaded!");
+            if (!getSafeModeEnabled()) {
+                info("TownyReligion was successfully loaded!");
+            }
         } else {
-            info("TownyReligion was successfully loaded, but is disabled in the config!");
+            if (!getSafeModeEnabled()) {
+                info("TownyReligion was successfully loaded, but is disabled in the config!");
+            }
         }
     }
 
@@ -118,12 +128,16 @@ public final class TownyReligion extends JavaPlugin {
         return this.getDescription().getVersion();
     }
 
-    private boolean townyVersionCheck(String version) {
+    public static boolean townyVersionCheck(String version) {
         return Version.fromString(version).compareTo(requiredTownyVersion) >= 0;
     }
 
-    private String getTownyVersion() {
+    public static String getTownyVersion() {
         return Bukkit.getPluginManager().getPlugin("Towny").getDescription().getVersion();
+    }
+
+    public static Version getRequiredTownyVersion() {
+        return requiredTownyVersion;
     }
 
     private void printSickASCIIArt() {
@@ -149,11 +163,11 @@ public final class TownyReligion extends JavaPlugin {
 
     public static void info(String message) {
         // Messaging.sendMsg(Bukkit.getConsoleSender(), message);
-        plugin.getLogger().info(message);
+        plugin.getLogger().log(Level.INFO, message);
     }
 
     public static void severe(String message) {
         // Messaging.sendErrorMsg(Bukkit.getConsoleSender(), message);
-        plugin.getLogger().severe(message);
+        plugin.getLogger().log(Level.SEVERE, ChatColor.RED + message);
     }
 }

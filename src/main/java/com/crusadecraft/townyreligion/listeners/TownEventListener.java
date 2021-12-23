@@ -1,6 +1,7 @@
 package com.crusadecraft.townyreligion.listeners;
 
 import com.crusadecraft.townyreligion.Messaging;
+import com.crusadecraft.townyreligion.TownyReligion;
 import com.crusadecraft.townyreligion.settings.TownyReligionSettings;
 import com.crusadecraft.townyreligion.settings.Translation;
 import com.crusadecraft.townyreligion.utils.ReligionUtils;
@@ -15,6 +16,10 @@ public class TownEventListener implements Listener {
 
 	@EventHandler
 	public void onTownStatusScreen(TownStatusScreenEvent event) {
+		if (TownyReligion.getSafeModeEnabled()) {
+			return;
+		}
+
 		if (TownyReligionSettings.getTownyReligionEnabled())
 			if (ReligionUtils.townHasReligion(event.getTown()))
 				event.addLines(Collections.singletonList(Translation.of("status_town_religion", ReligionUtils.getTownReligion(event.getTown()).getFormattedName())));
@@ -24,6 +29,10 @@ public class TownEventListener implements Listener {
 
 	@EventHandler
 	public void onPreTownDelete(PreDeleteTownEvent event) {
+		if (TownyReligion.getSafeModeEnabled()) {
+			return;
+		}
+
 		if (TownyReligionSettings.getTownyReligionEnabled())
 			if (!event.isCancelled())
 				if (ReligionUtils.townHasReligion(event.getTown()))

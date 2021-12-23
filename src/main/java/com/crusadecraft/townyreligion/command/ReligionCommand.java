@@ -1,6 +1,7 @@
 package com.crusadecraft.townyreligion.command;
 
 import com.crusadecraft.townyreligion.Messaging;
+import com.crusadecraft.townyreligion.TownyReligion;
 import com.crusadecraft.townyreligion.enums.TownyReligionPermissionNodes;
 import com.crusadecraft.townyreligion.events.*;
 import com.crusadecraft.townyreligion.objects.Religion;
@@ -64,6 +65,9 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 	// Ignored warnings to make things easier.
 	@SuppressWarnings({"ConstantConditions", "SwitchStatementWithTooFewBranches"})
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+		if (TownyReligion.getSafeModeEnabled()) {
+			return Collections.emptyList();
+		}
 
 		// Make sure the plugin is enabled in the config.
 		if (!TownyReligionSettings.getTownyReligionEnabled())
@@ -187,6 +191,11 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+		if (TownyReligion.getSafeModeEnabled()) {
+			Messaging.sendErrorMsg(sender, "TownyReligion is in safe mode. Check the console for details, and try executing /ra reload");
+			return false;
+		}
+
 		// Make sure the plugin is enabled in the config.
 		if (!TownyReligionSettings.getTownyReligionEnabled()) {
 			Messaging.sendErrorMsg(sender, Translation.of("msg_err_disabled"));
