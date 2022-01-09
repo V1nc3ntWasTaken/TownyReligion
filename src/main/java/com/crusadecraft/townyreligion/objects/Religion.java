@@ -3,7 +3,6 @@ package com.crusadecraft.townyreligion.objects;
 import com.crusadecraft.townyreligion.FlatFile;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownyObject;
-import jdk.jfr.Label;
 
 import java.util.ArrayList;
 
@@ -135,5 +134,14 @@ public class Religion {
 
     public ArrayList<Town> getTowns() {
         return FlatFile.getReligionTowns(this);
+    }
+
+    public boolean kickTown(Town town) {
+        if (towns.contains(town) && FlatFile.removeTownFromReligion(town, this)) {
+            towns.remove(town);
+            return true;
+        }
+
+        return false;
     }
 }

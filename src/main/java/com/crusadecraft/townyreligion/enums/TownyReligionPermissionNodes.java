@@ -20,6 +20,11 @@ public enum TownyReligionPermissionNodes {
 	TOWNYRELIGION_RELIGION_TOGGLE_PUBLIC("townyreligion.religion.toggle.public"),
 	TOWNYRELIGION_RELIGION_JOIN("townyreligion.religion.join"),
 	TOWNYRELIGION_RELIGION_JOIN_BYPASS_PUBLIC_CHECK("townyreligion.religion.join.bypass.public_check"),
+	TOWNYRELIGION_RELIGION_TOWNLIST("townyreligion.religion.townlist"),
+	TOWNYRELIGION_RELIGION_KICK("townyreligion.religion.kick"),
+	TOWNYRELIGION_RELIGION_SAY("townyreligion.religion.say"),
+	TOWNYRELIGION_RELIGION_LIST("townyreligion.religion.list"),
+	TOWNYRELIGION_RELIGION_HERE("townyreligion.religion.here"),
 
 
 

@@ -11,30 +11,33 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.statusscreens.StatusScreen;
 import com.palmergames.bukkit.util.ChatTools;
+import com.palmergames.bukkit.util.Colors;
 import com.palmergames.bukkit.util.NameValidation;
 import org.bukkit.Bukkit;
+import org.bukkit.Warning;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-// import java.util.Collections;
+import java.util.*;
 
 public class ReligionUtils {
 
 	/**
 	 * Checks that a religion is named correctly.
-	 * @param newReligion
+	 * @param newReligion new religion name
 	 * @return returns new name or null if name is invalid.
 	 */
 	public static String validateReligionName(String newReligion, Player religionOwner) throws Exception {
 		if (newReligion.equalsIgnoreCase("new") ||
+				newReligion.equalsIgnoreCase("leave") ||
 				newReligion.equalsIgnoreCase("delete") ||
+				newReligion.equalsIgnoreCase("join") ||
+				newReligion.equalsIgnoreCase("invite") ||
 				newReligion.equalsIgnoreCase("set") ||
-				newReligion.equalsIgnoreCase("none")
+				newReligion.equalsIgnoreCase("toggle") ||
+				newReligion.equalsIgnoreCase("townlist")
 		)
 			throw new Exception(Translation.of("msg_err_invalid_characters"));
 
@@ -100,7 +103,7 @@ public class ReligionUtils {
 
 	/**
 	 * Checks that a board is named correctly.
-	 * @param boardMsg
+	 * @param boardMsg the board message
 	 * @return returns new name or null if name is invalid.
 	 */
 	public static String validateReligionBoard(String boardMsg, Player religionOwner) throws Exception {
@@ -139,42 +142,21 @@ public class ReligionUtils {
 	}
 
 	/**
-	 * Checks that a religion is named correctly.
-	 * @param newReligion
-	 * @return returns new name or null if name is invalid.
-	 *//*
-	public static String validateReligionName(String newReligion) throws Exception {
-		String religion = "";
-
-		if (
-				newReligion.equalsIgnoreCase("new") ||
-						newReligion.equalsIgnoreCase("delete") ||
-						newReligion.equalsIgnoreCase("set")
-		)
-			throw new Exception(Translation.of("msg_err_invalid_characters"));
-
-		if (!newReligion.equalsIgnoreCase("none")) {
-			if (!NameValidation.isValidString(newReligion))
-				throw new Exception(Translation.of("msg_err_invalid_characters"));
-
-			if (newReligion.length() > TownyReligionSettings.getReligionMaxNameLength())
-				throw new Exception(Translation.of("msg_err_religion_name_too_long", TownyReligionSettings.getReligionMaxNameLength()));
-
-			religion = newReligion;
-		}
-		return religion;
-	}*/
-
-	/**
 	 * Given a resident, does this resident have the given religion?
 	 * @param res Resident to check.
 	 * @param religion Religion to check for.
 	 * @return True if the resident has a town with the given culture.
 	 */
 	public static boolean isSameReligion(Resident res, String religion) {
-		return res.hasTown() 
-				&& TownMetaDataController.hasTownReligion(TownyAPI.getInstance().getResidentTownOrNull(res))
-				&& TownMetaDataController.getTownReligion(TownyAPI.getInstance().getResidentTownOrNull(res)).equalsIgnoreCase(religion);
+		if (res == null)
+			return false;
+
+		if (TownyAPI.getInstance().getResidentTownOrNull(res) == null)
+			return false;
+
+		return res.hasTown()
+				&& TownMetaDataController.hasTownReligion(Objects.requireNonNull(TownyAPI.getInstance().getResidentTownOrNull(res)))
+				&& Objects.requireNonNull(TownMetaDataController.getTownReligion(Objects.requireNonNull(TownyAPI.getInstance().getResidentTownOrNull(res)))).equalsIgnoreCase(religion);
 	}
 
 	public static boolean townHasReligion(Town town) {
@@ -218,9 +200,7 @@ public class ReligionUtils {
 		ArrayList<String> names = new ArrayList<>();
 
 		if (new Religion().getReligions() != null) {
-			new Religion().getReligions().forEach(religion -> {
-				names.add(religion.getName());
-			});
+			new Religion().getReligions().forEach(religion -> names.add(religion.getName()));
 		}
 
 		return names;
@@ -240,32 +220,49 @@ public class ReligionUtils {
 
 		StatusScreen screen = new StatusScreen(sender);
 
-		// ___[ Atheism ]___
+		// ___[ Allahism ]___
 		screen.addComponentOf("title", ChatTools.formatTitle(religion.getFormattedName()));
 
 		// (Open)
 		if (religion.isPublic())
 			screen.addComponentOf("subtitle", ChatTools.formatSubTitle(com.palmergames.bukkit.towny.object.Translation.of("status_title_open")));
 
-		// Board: Don't kill the chickens
+		// Board: Don't kill the chickens, and please restock the furnaces
 		if (religion.getBoardMsg() != null)
 			screen.addComponentOf("board", colourKeyValue(com.palmergames.bukkit.towny.object.Translation.of("status_town_board"), religion.getBoardMsg()));
+
+		// Overseer: Amphire | Cork (City)
+		screen.addComponentOf("overseer", colourKeyValue(Translation.of("status_overseer"), religion.getOverseeingTown().getMayor().getName() + Colors.translateColorCodes(Translation.of("status_mayor_town_separator", com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_value"))) + religion.getOverseeingTown().getFormattedName()));
 
 		// Created Date
 		screen.addComponentOf("registered", colourKeyValue(com.palmergames.bukkit.towny.object.Translation.of("status_founded"), new SimpleDateFormat("MMM d yyyy").format(religion.getTimeEstablished())));
 
-		// Head Town: Big City
-		/*String townLine = colourKeyValue(Translation.of("status_head"), religion.getOwnerTown().getFormattedName() + String.format(" %s[%s]", com.palmergames.bukkit.towny.object.Translation.of("status_format_list_2"), religion.getOwnerTown().getResidents().size()));
-		String[] residents = TownyFormatter.getFormattedNames(religion.getOwnerTown().getResidents().toArray(new Resident[0]));
-		if (residents.length > 34)
-			residents = shortenOverlengthArray(residents, 35);
-		screen.addComponentOf("head", townLine,
-				HoverEvent.showText(Component.text(Colors.translateColorCodes(TownySettings.getPAPIFormattingTown(), religion.getFormattedName()))
-						.append(Component.newline())
-						.append(Component.text(TownyFormatter.getResi)))
-
-		);*/
-		screen.addComponentOf("overseer", colourKeyValue(Translation.of("status_overseer"), religion.getOverseeingTown().getFormattedName()));
+		// Towns: Abraham, Texas, Tokyo, and 2 more...
+		StringBuilder religionNames = new StringBuilder();
+		int limit = 15;
+		if (religion.getTowns().size() < limit)
+			for (Town town : religion.getTowns()) {
+				if (religion.getTowns().indexOf(town) == 0)
+					religionNames.append(town.getFormattedName());
+				else
+					religionNames.append(", ").append(town.getFormattedName());
+			}
+		else {
+			int ext = religion.getTowns().size() - limit;
+			for (Town town : religion.getTowns()) {
+				if (religion.getTowns().indexOf(town) < limit) {
+					if (religion.getTowns().indexOf(town) == 0) {
+						religionNames.append(town.getFormattedName());
+					} else {
+						religionNames.append(", ").append(town.getFormattedName());
+					}
+				} else {
+					religionNames.append(", ").append(Translation.of("status_town_ext", ext));
+					break;
+				}
+			}
+		}
+		screen.addComponentOf("towns", colourKeyValue(Translation.of("status_towns") + " " + com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_value") + "[" + religion.getTowns().size() + "]" + com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_key") + ":", Colors.White + religionNames));
 
 		return screen;
 	}
@@ -274,28 +271,51 @@ public class ReligionUtils {
 		return String.format("%s%s %s%s", com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_key"), key, com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_value"), value);
 	}
 
-	/*private static String[] shortenOverlengthArray(String[] array, int i) {
-		String[] entire = array;
-		array = new String[i + 1];
-		System.arraycopy(entire, 0, array, 0, i);
-		array[i] = com.palmergames.bukkit.towny.object.Translation.of("status_town_reslist_overlength");
-		return array;
-	}*/
-
 	public static List<Player> getOnlinePlayers(Religion religion) {
 		List<Player> list = new ArrayList<>(Bukkit.getOnlinePlayers());
 		List<Player> finalList = new ArrayList<>();
 
 		list.forEach(player -> {
-			if (TownyAPI.getInstance().getResident(player.getName()) != null &&
-					TownyAPI.getInstance().getResident(player.getName()).hasTown()) {
-				religion.getTownNames().forEach(townName -> {
-					if (TownyAPI.getInstance().getTown(townName).hasResident(player.getName()))
-						finalList.add(player);
-				});
+			if (TownyAPI.getInstance().getResident(player.getName()) != null) {
+				if (Objects.requireNonNull(TownyAPI.getInstance().getResident(player.getName())).hasTown()) {
+					religion.getTownNames().forEach(townName -> {
+						if (TownyAPI.getInstance().getTown(townName) != null)
+							if (Objects.requireNonNull(TownyAPI.getInstance().getTown(townName)).hasResident(player.getName()))
+								finalList.add(player);
+					});
+				}
 			}
 		});
 
 		return finalList;
+	}
+
+	@Warning(true)
+	public static Set<Religion> getReligionsSorted(String sortingMethod) {
+		Set<Religion> set = new HashSet<>();
+		HashMap<Religion, Object> map = new HashMap<>();
+		HashMap<Religion, Object> sortedMap = new HashMap<>();
+		ArrayList<Religion> religionList = new Religion().getReligions();
+
+		if (sortingMethod.equalsIgnoreCase("residents")) {
+			if (!religionList.isEmpty()) {
+				for (Religion religion : religionList) {
+					long residentNum = 0;
+					for (Town town : religion.getTowns()) {
+						residentNum += town.getNumResidents();
+					}
+
+					map.put(religion, residentNum);
+				}
+
+				
+			}
+		} else if (sortingMethod.equalsIgnoreCase("towns")) {
+
+		}  else {
+
+		}
+
+		return set;
 	}
 }

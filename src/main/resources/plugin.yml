@@ -20,6 +20,7 @@ permissions:
   # - townyreligion.religion.*
   # Permissions for everyone:
   # - townyreligion.religion
+  # - townyreligion.religion.townlist
 
   # Use all commands
   # Bypass all restrictions
@@ -42,6 +43,11 @@ permissions:
       townyreligion.religion.set.*: true
       townyreligion.religion.toggle.*: true
       townyreligion.religion.join: true
+      townyreligion.religion.townlist: true
+      townyreligion.religion.kick: true
+      townyreligion.religion.say: true
+      townyreligion.religion.list: true
+      townyreligion.religion.here: true
 
   # Use /religion command
   townyreligion.religion:
@@ -207,6 +213,36 @@ permissions:
   townyreligion.religion.join.bypass.public_check:
     description: User is able to join another religion, regardless of the public status. (usually moderators or admins)
     default: false
+
+  # Requires townyreligion.religion to work
+  # Use /religion townlist command
+  townyreligion.religion.townlist:
+    description: User is able to view townlists of all religions. (usually all users)
+    default: true
+
+  # Requires townyreligion.religion to work
+  # Use /religion kick command
+  townyreligion.religion.kick:
+    description: User is able to kick a town from their religion. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Use /religion say command
+  townyreligion.religion.say:
+    description: User is able to talk in /rel say. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Use /religion list command
+  townyreligion.religion.list:
+    description: User is able to view a list of all religions. (usually all users)
+    default: true
+
+  # Requires townyreligion.religion to work
+  # Use /religion here command
+  townyreligion.religion.here:
+    description: User is able to view the religion at their current location. (usually all users)
+    default: true
 
 
 
