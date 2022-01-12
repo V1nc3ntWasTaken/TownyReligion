@@ -42,12 +42,18 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 			"townlist",
 			"kick",
             "say",
-			"here"/*,
+			"here",
+			"ally",
+            "enemy"/*,
 			"list",
             "ranklist",
-            "rank",
-			"ally",
-            "enemy"*/
+            "rank"*/
+	);
+
+	private static final List<String> religionSideTabCompletes = Arrays.asList(
+			"add",
+			"remove",
+			"list"
 	);
 
 	private static final List<String> religionListTabCompletes = Arrays.asList(
@@ -59,7 +65,13 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 	);
 
 	private static final List<String> religionReligionTabCompletes = Arrays.asList(
-			"townlist"
+			"townlist",
+			"enemy",
+			"ally"
+	);
+
+	private static final List<String> religionReligionEnemyAllyTabCompletes = Arrays.asList(
+			"list"
 	);
 
 	private static final List<String> religionSetTabCompletes = Arrays.asList(
@@ -96,6 +108,46 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 				case "say":
 				case "here":
 					return Collections.emptyList();
+				case "ally":
+					if ((sender instanceof Player) && ReligionUtils.getTownReligion(TownyAPI.getInstance().getResident(sender.getName()).getTownOrNull()) != null) {
+						switch (args[1].toLowerCase(Locale.ROOT)) {
+							case "add":
+								ArrayList<String> religionList = ReligionUtils.getReligionNames();
+								religionList.remove(ReligionUtils.getTownReligion(TownyAPI.getInstance().getResident(sender.getName()).getTownOrNull()).getName());
+								ReligionUtils.getTownReligion(TownyAPI.getInstance().getResident(sender.getName()).getTownOrNull()).getEnemyList().forEach(religion -> religionList.remove(religion.getName()));
+								ReligionUtils.getTownReligion(TownyAPI.getInstance().getResident(sender.getName()).getTownOrNull()).getAllyList().forEach(religion -> religionList.remove(religion.getName()));
+								return NameUtil.filterByStart(religionList, args[2]);
+							case "remove":
+								ArrayList<String> religionList1 = ReligionUtils.getTownReligion(TownyAPI.getInstance().getResident(sender.getName()).getTownOrNull()).getAllyNames();
+								return NameUtil.filterByStart(religionList1, args[2]);
+							case "list":
+								return Collections.emptyList();
+							default:
+								return NameUtil.filterByStart(religionSideTabCompletes, args[1]);
+						}
+					} else {
+						return Collections.emptyList();
+					}
+				case "enemy":
+					if ((sender instanceof Player) && ReligionUtils.getTownReligion(TownyAPI.getInstance().getResident(sender.getName()).getTownOrNull()) != null) {
+						switch (args[1].toLowerCase(Locale.ROOT)) {
+							case "add":
+								ArrayList<String> religionList = ReligionUtils.getReligionNames();
+								religionList.remove(ReligionUtils.getTownReligion(TownyAPI.getInstance().getResident(sender.getName()).getTownOrNull()).getName());
+								ReligionUtils.getTownReligion(TownyAPI.getInstance().getResident(sender.getName()).getTownOrNull()).getEnemyList().forEach(religion -> religionList.remove(religion.getName()));
+								ReligionUtils.getTownReligion(TownyAPI.getInstance().getResident(sender.getName()).getTownOrNull()).getAllyList().forEach(religion -> religionList.remove(religion.getName()));;
+								return NameUtil.filterByStart(religionList, args[2]);
+							case "remove":
+								ArrayList<String> religionList1 = ReligionUtils.getTownReligion(TownyAPI.getInstance().getResident(sender.getName()).getTownOrNull()).getEnemyNames();
+								return NameUtil.filterByStart(religionList1, args[2]);
+							case "list":
+								return Collections.emptyList();
+							default:
+								return NameUtil.filterByStart(religionSideTabCompletes, args[1]);
+						}
+					} else {
+						return Collections.emptyList();
+					}
 				case "join":
 					// Make sure the player has the required permission, and that the player has a valid town.
 					if ((sender instanceof Player) && ReligionUtils.getTownReligion(TownyAPI.getInstance().getResident(sender.getName()).getTownOrNull()) != null) {
@@ -185,7 +237,19 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 						else
 							// Used with /rel ARGUMENT townlist
 							if (ReligionUtils.getReligionByName(args[0]) != null)
-								return NameUtil.filterByStart(religionReligionTabCompletes, args[1]);
+								if (args.length == 2) {
+									return NameUtil.filterByStart(religionReligionTabCompletes, args[1]);
+								} else {
+									if (args[1].equalsIgnoreCase("ally") || args[1].equalsIgnoreCase("enemy")) {
+										if (args.length == 3) {
+											return religionReligionEnemyAllyTabCompletes;
+										} else {
+											return Collections.emptyList();
+										}
+									} else {
+										return Collections.emptyList();
+									}
+								}
 							else
 								return Collections.emptyList();
 					else
@@ -214,6 +278,8 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 		sender.sendMessage(ChatTools.formatCommand("/rel", "townlist", "Show all towns in your religion"));
 		sender.sendMessage(ChatTools.formatCommand("/rel", "toggle", "Toggle options for your religion"));
 		sender.sendMessage(ChatTools.formatCommand("/rel", "set", "Change settings for your religion"));
+		sender.sendMessage(ChatTools.formatCommand("/rel", "ally", "Control religion allies"));
+		sender.sendMessage(ChatTools.formatCommand("/rel", "enemy", "Control religion enemies"));
 		sender.sendMessage(ChatTools.formatCommand("/rel", "?", "View this page"));
 	}
 
@@ -227,6 +293,20 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 	private void showReligionToggleHelp(CommandSender sender) {
 		sender.sendMessage(ChatTools.formatTitle("/religion toggle"));
 		sender.sendMessage(ChatTools.formatCommand("/rel toggle", "public", "Toggle public status of religion"));
+	}
+
+	private void showReligionAllyHelp(CommandSender sender) {
+		sender.sendMessage(ChatTools.formatTitle("/religion ally"));
+		sender.sendMessage(ChatTools.formatCommand("/rel ally", "add [Religion]", "Add religion as ally"));
+		sender.sendMessage(ChatTools.formatCommand("/rel ally", "remove [Religion]", "Remove religion as ally"));
+		sender.sendMessage(ChatTools.formatCommand("/rel ally", "list", "List religion allies"));
+	}
+
+	private void showReligionEnemyHelp(CommandSender sender) {
+		sender.sendMessage(ChatTools.formatTitle("/religion enemy"));
+		sender.sendMessage(ChatTools.formatCommand("/rel enemy", "add [Religion]", "Add religion as enemy"));
+		sender.sendMessage(ChatTools.formatCommand("/rel enemy", "remove [Religion]", "Remove religion as enemy"));
+		sender.sendMessage(ChatTools.formatCommand("/rel enemy", "list", "List religion enemies"));
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
@@ -268,6 +348,8 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 	 * |             invite      |
 	 * |             set         |
 	 * |             toggle      |
+	 * |             ally        |
+	 * |             enemy       |
 	 * |             ?           |
 	 * |                         |
 	 * ---------------------------
@@ -286,6 +368,12 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 					break;
 				case "list":
 					// parseReligionListCommand(player, StringMgmt.remFirstArg(args));
+					break;
+				case "enemy":
+					parseReligionEnemyCommand(player, StringMgmt.remFirstArg(args));
+					break;
+				case "ally":
+					parseReligionAllyCommand(player, StringMgmt.remFirstArg(args));
 					break;
 				case "here":
 					parseReligionHereCommand(player);
@@ -320,7 +408,8 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 				default:
 					// Attempt to fetch a religion object from /religion ARGUMENT.
 					if (ReligionUtils.getReligionByName(args[0]) == null) {
-						Messaging.sendErrorMsg(player, Translation.of("msg_err_not_registered", args[0]));
+						Messaging.sendErrorMsg(player, Translation.of("msg_err_religion_not_registered", args[0]));
+						return;
 					}
 
 					// Get religion object from /religion ARGUMENT and show the status screen.
@@ -355,8 +444,26 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 
 		// Check if the player wanted to see the townlist.
 		if (args.length > 1) {
-			if ("townlist".equalsIgnoreCase(args[1])) {
+			if (args[1].equalsIgnoreCase("townlist")) {
 				parseReligionTownlistCommand(player, religion);
+			} else if (args[1].equalsIgnoreCase("enemy")) {
+				try {
+					if (args[2].equalsIgnoreCase("list"))
+						parseReligionEnemyListCommand(player, religion);
+					else
+						showReligionEnemyHelp(player);
+				} catch (ArrayIndexOutOfBoundsException ignored) {
+					showReligionAllyHelp(player);
+				}
+			} else if (args[1].equalsIgnoreCase("ally")) {
+				try {
+					if (args[2].equalsIgnoreCase("list"))
+						parseReligionAllyListCommand(player, religion);
+					else
+						showReligionAllyHelp(player);
+				} catch (ArrayIndexOutOfBoundsException ignored) {
+					showReligionAllyHelp(player);
+				}
 			} else {
 				TownyMessaging.sendStatusScreen(player, ReligionUtils.getStatusScreen(religion, player));
 			}
@@ -1296,5 +1403,471 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 
 			Messaging.sendReligionMessage(religion, Translation.of("msg_religion_toggle_public", "enabled"));
 		}
+	}
+
+	/* --------------------------
+	 * |                        |
+	 * |        Command:        |
+	 * |                        |
+	 * |    /rel enemy          |
+	 * |               add      |
+	 * |               remove   |
+	 * |               list     |
+	 * |                        |
+	 * --------------------------
+	 */
+
+	private void parseReligionEnemyCommand(Player player, String[] args) {
+		// Handle /religion enemy ARGUMENT being empty.
+		if (args.length == 0) {
+			showReligionEnemyHelp(player);
+			return;
+		}
+
+		// Handle the command.
+		switch (args[0]) {
+			case "add":
+				parseReligionEnemyAddCommand(player, StringMgmt.remFirstArg(args));
+				break;
+			case "remove":
+				parseReligionEnemyRemoveCommand(player, StringMgmt.remFirstArg(args));
+				break;
+			case "list":
+				parseReligionEnemyListCommand(player);
+				break;
+			default:
+				showReligionEnemyHelp(player);
+				break;
+		}
+	}
+
+	private void parseReligionEnemyAddCommand(Player player, String[] args) {
+		// Ensure player has the required permission.
+		if (!player.hasPermission(TownyReligionPermissionNodes.TOWNYRELIGION_RELIGION_ENEMY_ADD.getNode())) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_perms"));
+			return;
+		}
+
+		// Ensure the player exists, and has a town with a religion.
+		Resident resident = TownyUniverse.getInstance().getResident(player.getName());
+		if (resident == null)
+			return;
+
+		if (!resident.hasTown()) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_town"));
+			return;
+		}
+
+		Town town = TownyAPI.getInstance().getResidentTownOrNull(resident);
+
+		if (!ReligionUtils.townHasReligion(town)) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_town_no_religion"));
+			return;
+		}
+
+		if (args.length == 0) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_name"));
+			return;
+		}
+
+		Religion targetReligion = ReligionUtils.getReligionByName(args[0]);
+		if (targetReligion == null) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_religion_not_registered", args[0]));
+			return;
+		}
+
+		Religion religion = ReligionUtils.getTownReligion(town);
+		for (Religion enemy : religion.getEnemyList()) {
+			if (enemy.getName().equals(targetReligion.getName())) {
+				Messaging.sendErrorMsg(player, Translation.of("msg_err_religion_already", Translation.of("religion_enemy")));
+				return;
+			}
+		}
+
+		for (Religion ally : religion.getAllyList()) {
+			if (ally.getName().equals(targetReligion.getName())) {
+				Messaging.sendErrorMsg(player, Translation.of("msg_err_religion_already", Translation.of("religion_ally")));
+				return;
+			}
+		}
+
+		ReligionUtils.getTownReligion(town).addEnemy(targetReligion);
+		Messaging.sendReligionMessage(religion, Translation.of("msg_religion_enemy_add", targetReligion.getFormattedName(), ReligionUtils.getTownReligion(town).getFormattedName()));
+		Messaging.sendReligionMessage(targetReligion, Translation.of("msg_religion_enemy_add", targetReligion.getFormattedName(), ReligionUtils.getTownReligion(town).getFormattedName()));
+	}
+
+	private void parseReligionEnemyRemoveCommand(Player player, String[] args) {
+		// Ensure player has the required permission.
+		if (!player.hasPermission(TownyReligionPermissionNodes.TOWNYRELIGION_RELIGION_ENEMY_REMOVE.getNode())) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_perms"));
+			return;
+		}
+
+		// Ensure the player exists, and has a town with a religion.
+		Resident resident = TownyUniverse.getInstance().getResident(player.getName());
+		if (resident == null)
+			return;
+
+		if (!resident.hasTown()) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_town"));
+			return;
+		}
+
+		Town town = TownyAPI.getInstance().getResidentTownOrNull(resident);
+
+		if (!ReligionUtils.townHasReligion(town)) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_town_no_religion"));
+			return;
+		}
+
+		if (args.length == 0) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_name"));
+			return;
+		}
+
+		Religion targetReligion = ReligionUtils.getReligionByName(args[0]);
+		if (targetReligion == null) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_religion_not_registered", args[0]));
+			return;
+		}
+
+		Religion religion = ReligionUtils.getTownReligion(town);
+		boolean temp = false;
+		for (Religion enemy : religion.getEnemyList()) {
+			if (enemy.getName().equals(targetReligion.getName())) {
+				temp = true;
+				break;
+			}
+		}
+
+		if (!temp) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_religion_not", Translation.of("religion_enemy")));
+			return;
+		}
+
+		ReligionUtils.getTownReligion(town).removeEnemy(targetReligion);
+		Messaging.sendReligionMessage(religion, Translation.of("msg_religion_enemy_remove", targetReligion.getFormattedName(), ReligionUtils.getTownReligion(town).getFormattedName()));
+		Messaging.sendReligionMessage(targetReligion, Translation.of("msg_religion_enemy_remove", targetReligion.getFormattedName(), ReligionUtils.getTownReligion(town).getFormattedName()));
+	}
+
+	private void parseReligionEnemyListCommand(Player player) {
+		// Make sure the player has the required permissions.
+		if (!player.hasPermission(TownyReligionPermissionNodes.TOWNYRELIGION_RELIGION_ENEMY_LIST.getNode())) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_perms"));
+			return;
+		}
+
+		// Make sure the player exists, and has a town with a religion.
+		Resident resident = TownyUniverse.getInstance().getResident(player.getName());
+		if (resident == null)
+			return;
+
+		if (!resident.hasTown()) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_town"));
+			return;
+		}
+
+		Town town = resident.getTownOrNull();
+		if (!ReligionUtils.townHasReligion(town)) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_town_no_religion"));
+			return;
+		}
+
+		// Build the message with all the towns.
+		Religion religion = ReligionUtils.getTownReligion(town);
+		StringBuilder religionNames = new StringBuilder("");
+		for (Religion religion1 : religion.getEnemyList()) {
+			if (religion.getEnemyList().indexOf(religion1) == 0)
+				religionNames.append(religion1.getFormattedName());
+			else
+				religionNames.append(", ").append(religion1.getFormattedName());
+		}
+
+		// Send the messages to the player.
+		player.sendMessage(ChatTools.formatTitle(religion.getFormattedName() + " " + Translation.of("status_enemies")));
+		player.sendMessage(Colors.translateColorCodes(
+				com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_key") +
+						Translation.of("status_enemies") +
+						" " +
+						com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_value") +
+						"[" +
+						religion.getEnemyList().size() +
+						"]" +
+						com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_key") +
+						": " +
+						Colors.White +
+						religionNames
+		));
+	}
+
+	private void parseReligionEnemyListCommand(Player player, Religion religion) {
+		// Make sure the player has the required permissions.
+		if (!player.hasPermission(TownyReligionPermissionNodes.TOWNYRELIGION_RELIGION_ENEMY_LIST.getNode())) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_perms"));
+			return;
+		}
+
+		// Make sure the player exists, and has a town with a religion.
+		Resident resident = TownyUniverse.getInstance().getResident(player.getName());
+		if (resident == null)
+			return;
+
+		// Build the message with all the towns.
+		StringBuilder religionNames = new StringBuilder("");
+		for (Religion religion1 : religion.getEnemyList()) {
+			if (religion.getEnemyList().indexOf(religion1) == 0)
+				religionNames.append(religion1.getFormattedName());
+			else
+				religionNames.append(", ").append(religion1.getFormattedName());
+		}
+
+		// Send the messages to the player.
+		player.sendMessage(ChatTools.formatTitle(religion.getFormattedName() + " " + Translation.of("status_enemies")));
+		player.sendMessage(Colors.translateColorCodes(
+				com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_key") +
+						Translation.of("status_enemies") +
+						" " +
+						com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_value") +
+						"[" +
+						religion.getEnemyList().size() +
+						"]" +
+						com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_key") +
+						": " +
+						Colors.White +
+						religionNames
+		));
+	}
+
+	/* -------------------------
+	 * |                       |
+	 * |        Command:       |
+	 * |                       |
+	 * |    /rel ally          |
+	 * |              add      |
+	 * |              remove   |
+	 * |              list     |
+	 * |                       |
+	 * -------------------------
+	 */
+
+	private void parseReligionAllyCommand(Player player, String[] args) {
+		// Handle /religion enemy ARGUMENT being empty.
+		if (args.length == 0) {
+			showReligionEnemyHelp(player);
+			return;
+		}
+
+		// Handle the command.
+		switch (args[0]) {
+			case "add":
+				parseReligionAllyAddCommand(player, StringMgmt.remFirstArg(args));
+				break;
+			case "remove":
+				parseReligionAllyRemoveCommand(player, StringMgmt.remFirstArg(args));
+				break;
+			case "list":
+				parseReligionAllyListCommand(player);
+				break;
+			default:
+				showReligionAllyHelp(player);
+				break;
+		}
+	}
+
+	private void parseReligionAllyAddCommand(Player player, String[] args) {
+		// Ensure player has the required permission.
+		if (!player.hasPermission(TownyReligionPermissionNodes.TOWNYRELIGION_RELIGION_ALLY_ADD.getNode())) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_perms"));
+			return;
+		}
+
+		// Ensure the player exists, and has a town with a religion.
+		Resident resident = TownyUniverse.getInstance().getResident(player.getName());
+		if (resident == null)
+			return;
+
+		if (!resident.hasTown()) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_town"));
+			return;
+		}
+
+		Town town = TownyAPI.getInstance().getResidentTownOrNull(resident);
+
+		if (!ReligionUtils.townHasReligion(town)) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_town_no_religion"));
+			return;
+		}
+
+		if (args.length == 0) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_name"));
+			return;
+		}
+
+		Religion targetReligion = ReligionUtils.getReligionByName(args[0]);
+		if (targetReligion == null) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_religion_not_registered", args[0]));
+			return;
+		}
+
+		Religion religion = ReligionUtils.getTownReligion(town);
+		for (Religion ally : religion.getAllyList()) {
+			if (ally.getName().equals(targetReligion.getName())) {
+				Messaging.sendErrorMsg(player, Translation.of("msg_err_religion_already", Translation.of("religion_ally")));
+				return;
+			}
+		}
+
+		for (Religion enemy : religion.getEnemyList()) {
+			if (enemy.getName().equals(targetReligion.getName())) {
+				Messaging.sendErrorMsg(player, Translation.of("msg_err_religion_already", Translation.of("religion_enemy")));
+				return;
+			}
+		}
+
+		ReligionUtils.getTownReligion(town).addAlly(targetReligion);
+		Messaging.sendReligionMessage(religion, Translation.of("msg_religion_ally_add", targetReligion.getFormattedName(), ReligionUtils.getTownReligion(town).getFormattedName()));
+		Messaging.sendReligionMessage(targetReligion, Translation.of("msg_religion_ally_add", targetReligion.getFormattedName(), ReligionUtils.getTownReligion(town).getFormattedName()));
+	}
+
+	private void parseReligionAllyRemoveCommand(Player player, String[] args) {
+		// Ensure player has the required permission.
+		if (!player.hasPermission(TownyReligionPermissionNodes.TOWNYRELIGION_RELIGION_ALLY_REMOVE.getNode())) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_perms"));
+			return;
+		}
+
+		// Ensure the player exists, and has a town with a religion.
+		Resident resident = TownyUniverse.getInstance().getResident(player.getName());
+		if (resident == null)
+			return;
+
+		if (!resident.hasTown()) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_town"));
+			return;
+		}
+
+		Town town = TownyAPI.getInstance().getResidentTownOrNull(resident);
+
+		if (!ReligionUtils.townHasReligion(town)) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_town_no_religion"));
+			return;
+		}
+
+		if (args.length == 0) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_name"));
+			return;
+		}
+
+		Religion targetReligion = ReligionUtils.getReligionByName(args[0]);
+		if (targetReligion == null) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_religion_not_registered", args[0]));
+			return;
+		}
+
+		Religion religion = ReligionUtils.getTownReligion(town);
+		boolean temp = false;
+		for (Religion ally : religion.getAllyList()) {
+			if (ally.getName().equals(targetReligion.getName())) {
+				temp = true;
+				break;
+			}
+		}
+
+		if (!temp) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_religion_not", Translation.of("religion_ally")));
+			return;
+		}
+
+		ReligionUtils.getTownReligion(town).removeAlly(targetReligion);
+		Messaging.sendReligionMessage(religion, Translation.of("msg_religion_ally_remove", targetReligion.getFormattedName(), ReligionUtils.getTownReligion(town).getFormattedName()));
+		Messaging.sendReligionMessage(targetReligion, Translation.of("msg_religion_ally_remove", targetReligion.getFormattedName(), ReligionUtils.getTownReligion(town).getFormattedName()));
+	}
+
+	private void parseReligionAllyListCommand(Player player) {
+		// Make sure the player has the required permissions.
+		if (!player.hasPermission(TownyReligionPermissionNodes.TOWNYRELIGION_RELIGION_ALLY_LIST.getNode())) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_perms"));
+			return;
+		}
+
+		// Make sure the player exists, and has a town with a religion.
+		Resident resident = TownyUniverse.getInstance().getResident(player.getName());
+		if (resident == null)
+			return;
+
+		if (!resident.hasTown()) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_town"));
+			return;
+		}
+
+		Town town = resident.getTownOrNull();
+		if (!ReligionUtils.townHasReligion(town)) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_town_no_religion"));
+			return;
+		}
+
+		// Build the message with all the towns.
+		Religion religion = ReligionUtils.getTownReligion(town);
+		StringBuilder religionNames = new StringBuilder("");
+		for (Religion religion1 : religion.getAllyList()) {
+			if (religion.getAllyList().indexOf(religion1) == 0)
+				religionNames.append(religion1.getFormattedName());
+			else
+				religionNames.append(", ").append(religion1.getFormattedName());
+		}
+
+		// Send the messages to the player.
+		player.sendMessage(ChatTools.formatTitle(religion.getFormattedName() + " " + Translation.of("status_allies")));
+		player.sendMessage(Colors.translateColorCodes(
+				com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_key") +
+						Translation.of("status_allies") +
+						" " +
+						com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_value") +
+						"[" +
+						religion.getEnemyList().size() +
+						"]" +
+						com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_key") +
+						": " +
+						Colors.White +
+						religionNames
+		));
+	}
+
+	private void parseReligionAllyListCommand(Player player, Religion religion) {
+		// Make sure the player has the required permissions.
+		if (!player.hasPermission(TownyReligionPermissionNodes.TOWNYRELIGION_RELIGION_ALLY_LIST.getNode())) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_no_perms"));
+			return;
+		}
+
+		// Make sure the player exists, and has a town with a religion.
+		Resident resident = TownyUniverse.getInstance().getResident(player.getName());
+		if (resident == null)
+			return;
+
+		// Build the message with all the towns.
+		StringBuilder religionNames = new StringBuilder("");
+		for (Religion religion1 : religion.getAllyList()) {
+			if (religion.getAllyList().indexOf(religion1) == 0)
+				religionNames.append(religion1.getFormattedName());
+			else
+				religionNames.append(", ").append(religion1.getFormattedName());
+		}
+
+		// Send the messages to the player.
+		player.sendMessage(ChatTools.formatTitle(religion.getFormattedName() + " " + Translation.of("status_allies")));
+		player.sendMessage(Colors.translateColorCodes(
+				com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_key") +
+						Translation.of("status_allies") +
+						" " +
+						com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_value") +
+						"[" +
+						religion.getEnemyList().size() +
+						"]" +
+						com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_key") +
+						": " +
+						Colors.White +
+						religionNames
+		));
 	}
 }

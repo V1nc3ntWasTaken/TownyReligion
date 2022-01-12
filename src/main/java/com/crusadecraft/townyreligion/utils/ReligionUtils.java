@@ -237,9 +237,10 @@ public class ReligionUtils {
 		// Created Date
 		screen.addComponentOf("registered", colourKeyValue(com.palmergames.bukkit.towny.object.Translation.of("status_founded"), new SimpleDateFormat("MMM d yyyy").format(religion.getTimeEstablished())));
 
-		// Towns: Abraham, Texas, Tokyo, and 2 more...
+		int limit = 10;
+
+		// Towns [5]: Abraham, Texas, Tokyo, and 2 more...
 		StringBuilder religionNames = new StringBuilder();
-		int limit = 15;
 		if (religion.getTowns().size() < limit)
 			for (Town town : religion.getTowns()) {
 				if (religion.getTowns().indexOf(town) == 0)
@@ -263,6 +264,59 @@ public class ReligionUtils {
 			}
 		}
 		screen.addComponentOf("towns", colourKeyValue(Translation.of("status_towns") + " " + com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_value") + "[" + religion.getTowns().size() + "]" + com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_key") + ":", Colors.White + religionNames));
+
+		// Allies [2]: Pepeism, Allahism
+		religionNames = new StringBuilder();
+		StringBuilder allyNames = new StringBuilder();
+		if (religion.getAllyList().size() < limit)
+			for (Religion ally : religion.getAllyList()) {
+				if (religion.getAllyList().indexOf(ally) == 0)
+					religionNames.append(ally.getFormattedName());
+				else
+					religionNames.append(", ").append(ally.getFormattedName());
+			}
+		else {
+			int ext = religion.getAllyList().size() - limit;
+			for (Religion ally : religion.getAllyList()) {
+				if (religion.getAllyList().indexOf(ally) < limit) {
+					if (religion.getAllyList().indexOf(ally) == 0) {
+						religionNames.append(ally.getFormattedName());
+					} else {
+						religionNames.append(", ").append(ally.getFormattedName());
+					}
+				} else {
+					religionNames.append(", ").append(Translation.of("status_town_ext", ext));
+					break;
+				}
+			}
+		}
+		screen.addComponentOf("allies", colourKeyValue(Translation.of("status_allies") + " " + com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_value") + "[" + religion.getAllyList().size() + "]" + com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_key") + ":", Colors.White + religionNames));
+
+		// Enemies [1]: Budahism
+		religionNames = new StringBuilder();
+		if (religion.getEnemyList().size() < limit)
+			for (Religion enemy : religion.getEnemyList()) {
+				if (religion.getEnemyList().indexOf(enemy) == 0)
+					religionNames.append(enemy.getFormattedName());
+				else
+					religionNames.append(", ").append(enemy.getFormattedName());
+			}
+		else {
+			int ext = religion.getEnemyList().size() - limit;
+			for (Religion enemy : religion.getEnemyList()) {
+				if (religion.getEnemyList().indexOf(enemy) < limit) {
+					if (religion.getEnemyList().indexOf(enemy) == 0) {
+						religionNames.append(enemy.getFormattedName());
+					} else {
+						religionNames.append(", ").append(enemy.getFormattedName());
+					}
+				} else {
+					religionNames.append(", ").append(Translation.of("status_town_ext", ext));
+					break;
+				}
+			}
+		}
+		screen.addComponentOf("enemies", colourKeyValue(Translation.of("status_enemies") + " " + com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_value") + "[" + religion.getEnemyList().size() + "]" + com.palmergames.bukkit.towny.object.Translation.of("status_format_key_value_key") + ":", Colors.White + religionNames));
 
 		return screen;
 	}

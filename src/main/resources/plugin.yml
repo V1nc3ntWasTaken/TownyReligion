@@ -21,6 +21,8 @@ permissions:
   # Permissions for everyone:
   # - townyreligion.religion
   # - townyreligion.religion.townlist
+  # - townyreligion.religion.ally.list
+  # - townyreligion.religion.enemy.list
 
   # Use all commands
   # Bypass all restrictions
@@ -48,6 +50,8 @@ permissions:
       townyreligion.religion.say: true
       townyreligion.religion.list: true
       townyreligion.religion.here: true
+      townyreligion.religion.ally.*: true
+      townyreligion.religion.enemy.*: true
 
   # Use /religion command
   townyreligion.religion:
@@ -242,6 +246,62 @@ permissions:
   # Use /religion here command
   townyreligion.religion.here:
     description: User is able to view the religion at their current location. (usually all users)
+    default: true
+
+  # Requires townyreligion.religion to work
+  # Use all commands after /rel enemy
+  townyreligion.religion.enemy.*:
+    description: User is able to use all /rel enemy commands. (usually town mayors or assistants)
+    default: false
+    children:
+      townyreligion.religion.enemy.add: true
+      townyreligion.religion.enemy.remove: true
+      townyreligion.religion.enemy.list: true
+
+  # Requires townyreligion.religion to work
+  # Use /religion enemy add command
+  townyreligion.religion.enemy.add:
+    description: User is able to add a religion to the enemy list. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Use /religion enemy remove command
+  townyreligion.religion.enemy.remove:
+    description: User is able to remove a religion from the enemy list. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Use /religion enemy list command
+  townyreligion.religion.enemy.list:
+    description: User is able to view the religions enemy list. (usually all users)
+    default: true
+
+  # Requires townyreligion.religion to work
+  # Use all commands after /rel ally
+  townyreligion.religion.ally.*:
+    description: User is able to use all /rel ally commands. (usually town mayors or assistants)
+    default: false
+    children:
+      townyreligion.religion.ally.add: true
+      townyreligion.religion.ally.remove: true
+      townyreligion.religion.ally.list: true
+
+  # Requires townyreligion.religion to work
+  # Use /religion ally add command
+  townyreligion.religion.ally.add:
+    description: User is able to add a religion to the ally list. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Use /religion ally remove command
+  townyreligion.religion.ally.remove:
+    description: User is able to remove a religion from the ally list. (usually town mayors or assistants)
+    default: false
+
+  # Requires townyreligion.religion to work
+  # Use /religion ally list command
+  townyreligion.religion.ally.list:
+    description: User is able to view the religions ally list. (usually all users)
     default: true
 
 

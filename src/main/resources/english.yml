@@ -32,6 +32,8 @@ msg_err_flatfile_cannot_create_defaults: 'Could not create flatfile default file
 status_town_religion: '&2Religion: &a%s'
 status_town_ext: 'and %s more...'
 status_towns: 'Towns'
+status_allies: 'Allies'
+status_enemies: 'Enemies'
 
 #religion setting
 msg_religion_msg: '&6[%s] '
@@ -44,8 +46,12 @@ msg_religion_board_remove: '&bReligion message board removed.'
 msg_religion_board_set: '&bReligion message board changed.'
 msg_religion_rename: '&bReligion name set to %s.'
 msg_religion_toggle_public: '&bThe religion''s public status is now %s.'
-msg_religion_kicked_town: 'The town %s was kicked from the religion.'
-msg_town_kicked: 'The town has been kicked from the religion %s.'
+msg_religion_kicked_town: '&bThe town %s was kicked from the religion.'
+msg_town_kicked: '&bThe town has been kicked from the religion %s.'
+msg_religion_enemy_add: '&bThe religion of %s is now seen as an enemy to the religion of %s.'
+msg_religion_enemy_remove: '&bThe religion of %s is no longer seen as an enemy to the religion of %s.'
+msg_religion_ally_add: '&bThe religion of %s is now seen as an ally to the religion of %s.'
+msg_religion_ally_remove: '&bThe religion of %s is no longer seen as an ally to the religion of %s.'
 
 msg_err_disabled: '&cTownyReligion is disabled. Refer to console.'
 msg_err_no_perms: '&cYou don''t have enough permissions for that command.'
@@ -74,6 +80,9 @@ msg_err_town_belongs_to_other_religion: '&c%s already has a religion.'
 msg_err_self_kick: '&cYou cannot kick yourself.'
 msg_err_blank_msg: '&cMessage cannot be blank.'
 msg_err_not_claimed: '&bThis area has not been claimed.'
+msg_err_religion_already: '&cThat religion is already an %s.'
+msg_err_religion_not: '&cThat religion is not an %s.'
+msg_err_taken_name: '&cThat name is already taken.'
 
 msg_global_new_religion: '&bThe religion of %s has been established by the town %s!'
 msg_global_delete_religion: '&bThe religion of %s, overseen by %s has been disbanded.'
@@ -81,14 +90,15 @@ msg_global_delete_religion: '&bThe religion of %s, overseen by %s has been disba
 #status
 status_religion: 'Religion:'
 status_overseer: 'Overseer:'
-status_mayor_town_separator: ' &f| &s'
+status_mayor_town_separator: ' &f| %s'
 religion_name: 'Religion Name'
 number_of: 'Number of %s'
-
 
 #chat
 religion_chat_message: '&f[&5Religion&f] &f[&6%s&f] %s: &d%s'
 religion_say_msg: '&b%s'
+religion_enemy: 'enemy'
+religion_ally: 'ally'
 
 #admin
 admin_help_1: 'Reload the config, language and flatfile.'

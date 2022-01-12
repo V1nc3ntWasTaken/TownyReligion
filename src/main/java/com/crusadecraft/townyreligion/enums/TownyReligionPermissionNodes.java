@@ -26,6 +26,13 @@ public enum TownyReligionPermissionNodes {
 	TOWNYRELIGION_RELIGION_LIST("townyreligion.religion.list"),
 	TOWNYRELIGION_RELIGION_HERE("townyreligion.religion.here"),
 
+	TOWNYRELIGION_RELIGION_ENEMY_ADD("townyreligion.religion.enemy.add"),
+	TOWNYRELIGION_RELIGION_ENEMY_REMOVE("townyreligion.religion.enemy.remove"),
+	TOWNYRELIGION_RELIGION_ENEMY_LIST("townyreligion.religion.enemy.list"),
+	TOWNYRELIGION_RELIGION_ALLY_ADD("townyreligion.religion.ally.add"),
+	TOWNYRELIGION_RELIGION_ALLY_REMOVE("townyreligion.religion.ally.remove"),
+	TOWNYRELIGION_RELIGION_ALLY_LIST("townyreligion.religion.ally.list"),
+
 
 
 

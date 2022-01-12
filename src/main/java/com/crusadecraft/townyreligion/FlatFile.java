@@ -3,6 +3,7 @@ package com.crusadecraft.townyreligion;
 import com.crusadecraft.townyreligion.objects.Religion;
 import com.crusadecraft.townyreligion.settings.TownyReligionSettings;
 import com.crusadecraft.townyreligion.utils.FileMgmt;
+import com.crusadecraft.townyreligion.utils.ReligionUtils;
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
@@ -176,21 +177,21 @@ public class FlatFile {
         if (overseeingTownObject == null)
             return null;
 
-        ArrayList<Town> allyListObject = new ArrayList<>();
+        ArrayList<Religion> allyListObject = new ArrayList<>();
         if (allyList != null) {
             String[] allyListStringList = allyList.split(",");
-            for (String townName : allyListStringList) {
-                if (TownyAPI.getInstance().getTown(townName) != null)
-                    allyListObject.add(TownyAPI.getInstance().getTown(townName));
+            for (String religionName : allyListStringList) {
+                if (ReligionUtils.getReligionByName(religionName) != null)
+                    allyListObject.add(ReligionUtils.getReligionByName(religionName));
             }
         }
 
-        ArrayList<Town> enemyListObject = new ArrayList<>();
+        ArrayList<Religion> enemyListObject = new ArrayList<>();
         if (enemyList != null) {
             String[] enemyListStringList = enemyList.split(",");
-            for (String townName : enemyListStringList) {
-                if (TownyAPI.getInstance().getTown(townName) != null)
-                    enemyListObject.add(TownyAPI.getInstance().getTown(townName));
+            for (String religionName : enemyListStringList) {
+                if (ReligionUtils.getReligionByName(religionName) != null)
+                    enemyListObject.add(ReligionUtils.getReligionByName(religionName));
             }
         }
 
@@ -335,9 +336,6 @@ public class FlatFile {
             if (TownyAPI.getInstance().getTown(townName) != null)
                 townObjectList.add(TownyAPI.getInstance().getTown(townName));
         }
-
-        if (townObjectList == null)
-            return null;
 
         return townObjectList;
     }
@@ -631,7 +629,7 @@ public class FlatFile {
             // Test 1
             temp[0] = fileContents;
 
-            temp[0] = temp[0].replaceFirst("isPublic=", "isPublic=" + town.getName() + ",");
+            temp[0] = temp[0].replaceFirst("towns=", "towns=" + town.getName() + ",");
             if (!temp[0].equals(fileContents))
                 tests[0] = true;
         } catch (Exception ignored) {}
@@ -642,6 +640,303 @@ public class FlatFile {
             fileWriter = new FileWriter(religionFile);
 
             fileWriter.write(newTownsString);
+
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean addEnemyToReligion(Religion religion, Religion targetReligion) {
+        religionFile = new File(religionsFolder.getAbsolutePath() + File.separator + religion.getName() + ".txt");
+        stringBuffer = new StringBuffer();
+
+        if (!religionFile.exists())
+            return false;
+
+        String enemyList = null;
+
+        try {
+            scanner = new Scanner(religionFile);
+
+            while (scanner.hasNextLine()) {
+                final String line = scanner.nextLine();
+
+                stringBuffer.append(line).append(System.lineSeparator());
+
+                if (line.startsWith("enemyList="))
+                    enemyList = line.replaceFirst("enemyList=", "");
+            }
+
+            scanner.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        final String fileContents = stringBuffer.toString();
+        String newEnemyListString;
+        String[] temp = {null};
+        boolean[] tests = {false};
+
+        try {
+            // Test 1
+            temp[0] = fileContents;
+
+            if (enemyList.equals(""))
+                temp[0] = temp[0].replaceFirst("enemyList=", "enemyList=" + targetReligion.getName());
+            else
+                temp[0] = temp[0].replaceFirst("enemyList=", "enemyList=" + targetReligion.getName() + ",");
+            if (!temp[0].equals(fileContents))
+                tests[0] = true;
+        } catch (Exception ignored) {}
+
+        newEnemyListString = temp[0];
+
+        try {
+            fileWriter = new FileWriter(religionFile);
+
+            fileWriter.write(newEnemyListString);
+
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean removeEnemyFromReligion(Religion religion, Religion targetReligion) {
+        religionFile = new File(religionsFolder.getAbsolutePath() + File.separator + religion.getName() + ".txt");
+        stringBuffer = new StringBuffer();
+
+        if (!religionFile.exists())
+            return false;
+
+        String enemyList = null;
+
+        try {
+            scanner = new Scanner(religionFile);
+
+            while (scanner.hasNextLine()) {
+                final String line = scanner.nextLine();
+
+                stringBuffer.append(line).append(System.lineSeparator());
+
+                if (line.startsWith("enemyList="))
+                    enemyList = line.replaceFirst("enemyList=", "");
+            }
+
+            scanner.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        final String fileContents = stringBuffer.toString();
+        String newEnemyListString;
+        String[] temp = {null};
+        boolean[] tests = {false};
+
+        try {
+            // Test 1
+            temp[0] = fileContents;
+            StringBuilder newBuffer = new StringBuilder();
+
+            String[] string = fileContents.split(System.lineSeparator());
+            for (String line : string) {
+                if (line.startsWith("enemyList=")) {
+                    if (enemyList == null)
+                        return false;
+
+                    if (enemyList.split(",").length < 2) {
+                        String newLine = line;
+                        String tempString = newLine.replace(targetReligion.getName(), "");
+                        newLine = newLine.replace(line, tempString);
+
+                        newBuffer = new StringBuilder().append(stringBuffer.toString().replace(line, newLine));
+                        // newBuffer = stringBuffer.append(newLine).append(System.lineSeparator());
+                    } else if (line.contains(targetReligion.getName() + ",")) {
+                        String newLine = line;
+                        String tempString = newLine.replace(targetReligion.getName() + ",", "");
+                        newLine = newLine.replace(line, tempString);
+
+                        newBuffer = new StringBuilder().append(stringBuffer.toString().replace(line, newLine));
+                        // newBuffer = stringBuffer.append(newLine).append(System.lineSeparator());
+                    } else if (line.contains("," + targetReligion.getName())) {
+                        String newLine = line;
+                        String tempString = newLine.replace("," + targetReligion.getName(), "");
+                        newLine = newLine.replace(line, tempString);
+
+                        newBuffer = new StringBuilder().append(stringBuffer.toString().replace(line, newLine));
+                        // newBuffer = stringBuffer.append(newLine).append(System.lineSeparator());
+                    }
+                }
+            }
+
+            temp[0] = newBuffer.toString();
+            tests[0] = true;
+        } catch (Exception ignored) {}
+
+        newEnemyListString = temp[0];
+
+        try {
+            fileWriter = new FileWriter(religionFile);
+
+            fileWriter.write(newEnemyListString);
+
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean addAllyToReligion(Religion religion, Religion targetReligion) {
+        religionFile = new File(religionsFolder.getAbsolutePath() + File.separator + religion.getName() + ".txt");
+        stringBuffer = new StringBuffer();
+
+        if (!religionFile.exists())
+            return false;
+
+        String allyList = null;
+
+        try {
+            scanner = new Scanner(religionFile);
+
+            while (scanner.hasNextLine()) {
+                final String line = scanner.nextLine();
+
+                stringBuffer.append(line).append(System.lineSeparator());
+
+                if (line.startsWith("allyList="))
+                    allyList = line.replaceFirst("allyList=", "");
+            }
+
+            scanner.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        final String fileContents = stringBuffer.toString();
+        String newEnemyListString;
+        String[] temp = {null};
+        boolean[] tests = {false};
+
+        try {
+            // Test 1
+            temp[0] = fileContents;
+
+            if (allyList.equals(""))
+                temp[0] = temp[0].replaceFirst("allyList=", "allyList=" + targetReligion.getName());
+            else
+                temp[0] = temp[0].replaceFirst("allyList=", "allyList=" + targetReligion.getName() + ",");
+            if (!temp[0].equals(fileContents))
+                tests[0] = true;
+        } catch (Exception ignored) {}
+
+        newEnemyListString = temp[0];
+
+        try {
+            fileWriter = new FileWriter(religionFile);
+
+            fileWriter.write(newEnemyListString);
+
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean removeAllyFromReligion(Religion religion, Religion targetReligion) {
+        religionFile = new File(religionsFolder.getAbsolutePath() + File.separator + religion.getName() + ".txt");
+        stringBuffer = new StringBuffer();
+
+        if (!religionFile.exists())
+            return false;
+
+        String allyList = null;
+
+        try {
+            scanner = new Scanner(religionFile);
+
+            while (scanner.hasNextLine()) {
+                final String line = scanner.nextLine();
+
+                stringBuffer.append(line).append(System.lineSeparator());
+
+                if (line.startsWith("allyList="))
+                    allyList = line.replaceFirst("allyList=", "");
+            }
+
+            scanner.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        final String fileContents = stringBuffer.toString();
+        String newAllyListString;
+        String[] temp = {null};
+        boolean[] tests = {false};
+
+        try {
+            // Test 1
+            temp[0] = fileContents;
+            StringBuilder newBuffer = new StringBuilder();
+
+            String[] string = fileContents.split(System.lineSeparator());
+            for (String line : string) {
+                if (line.startsWith("allyList=")) {
+                    if (allyList == null)
+                        return false;
+
+                    if (allyList.split(",").length < 2) {
+                        String newLine = line;
+                        String tempString = newLine.replace(targetReligion.getName(), "");
+                        newLine = newLine.replace(line, tempString);
+
+                        newBuffer = new StringBuilder().append(stringBuffer.toString().replace(line, newLine));
+                    } else if (line.contains(targetReligion.getName() + ",")) {
+                        String newLine = line;
+                        String tempString = newLine.replace(targetReligion.getName() + ",", "");
+                        newLine = newLine.replace(line, tempString);
+
+                        newBuffer = new StringBuilder().append(stringBuffer.toString().replace(line, newLine));
+                    } else if (line.contains("," + targetReligion.getName())) {
+                        String newLine = line;
+                        String tempString = newLine.replace("," + targetReligion.getName(), "");
+                        newLine = newLine.replace(line, tempString);
+
+                        newBuffer = new StringBuilder().append(stringBuffer.toString().replace(line, newLine));
+                    }
+                }
+            }
+
+            temp[0] = newBuffer.toString();
+            tests[0] = true;
+        } catch (Exception ignored) {}
+
+        newAllyListString = temp[0];
+
+        try {
+            fileWriter = new FileWriter(religionFile);
+
+            fileWriter.write(newAllyListString);
 
             fileWriter.flush();
             fileWriter.close();

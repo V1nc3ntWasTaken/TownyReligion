@@ -2,7 +2,6 @@ package com.crusadecraft.townyreligion.objects;
 
 import com.crusadecraft.townyreligion.FlatFile;
 import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.TownyObject;
 
 import java.util.ArrayList;
 
@@ -13,8 +12,8 @@ public class Religion {
     private ArrayList<Town> towns;
     private boolean isPublic;
     private String boardMsg;
-    private ArrayList<Town> allyList;
-    private ArrayList<Town> enemyList;
+    private ArrayList<Religion> allyList;
+    private ArrayList<Religion> enemyList;
 
     public Religion(
             String name,
@@ -23,8 +22,8 @@ public class Religion {
             Town overseeingTown,
             boolean isPublic,
             String boardMsg,
-            ArrayList<Town> allyList,
-            ArrayList<Town> enemyList
+            ArrayList<Religion> allyList,
+            ArrayList<Religion> enemyList
             ) {
         this.name = name;
         this.timeEstablished = timeEstablished;
@@ -139,6 +138,68 @@ public class Religion {
     public boolean kickTown(Town town) {
         if (towns.contains(town) && FlatFile.removeTownFromReligion(town, this)) {
             towns.remove(town);
+            return true;
+        }
+
+        return false;
+    }
+
+    public ArrayList<Religion> getEnemyList() {
+        return enemyList;
+    }
+
+    public boolean addEnemy(Religion religion) {
+        if (FlatFile.addEnemyToReligion(this, religion)) {
+            enemyList.add(religion);
+            return true;
+        }
+        return false;
+    }
+
+    public ArrayList<String> getEnemyNames() {
+        ArrayList<String> temp = new ArrayList<>();
+
+        for (Religion religion : getEnemyList()) {
+            temp.add(religion.getName());
+        }
+
+        return temp;
+    }
+
+    public boolean removeEnemy(Religion religion) {
+        if (FlatFile.removeEnemyFromReligion(this, religion)) {
+            enemyList.remove(religion);
+            return true;
+        }
+
+        return false;
+    }
+
+    public ArrayList<Religion> getAllyList() {
+        return allyList;
+    }
+
+    public boolean addAlly(Religion religion) {
+        if (FlatFile.addAllyToReligion(this, religion)) {
+            allyList.add(religion);
+            return true;
+        }
+        return false;
+    }
+
+    public ArrayList<String> getAllyNames() {
+        ArrayList<String> temp = new ArrayList<>();
+
+        for (Religion religion : getAllyList()) {
+            temp.add(religion.getName());
+        }
+
+        return temp;
+    }
+
+    public boolean removeAlly(Religion religion) {
+        if (FlatFile.removeAllyFromReligion(this, religion)) {
+            allyList.remove(religion);
             return true;
         }
 
