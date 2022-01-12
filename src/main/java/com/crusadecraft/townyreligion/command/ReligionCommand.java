@@ -1291,6 +1291,11 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 			return;
 		}
 
+		if (newName[0].equals(religion.getFormattedName()) || ReligionUtils.getReligionNames().contains(newName[0])) {
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_taken_name"));
+			return;
+		}
+
 		// Send a confirmation message to the religion creator.
 		String finalNewName = newName[0];
 		Confirmation.runOnAccept(() -> {
@@ -1377,7 +1382,7 @@ public class ReligionCommand implements CommandExecutor, TabCompleter {
 		Town town = TownyAPI.getInstance().getResidentTownOrNull(resident);
 
 		if (!ReligionUtils.townHasReligion(town)) {
-			Messaging.sendErrorMsg(player, Translation.of("msg_err_already_has_religion"));
+			Messaging.sendErrorMsg(player, Translation.of("msg_err_town_no_religion"));
 			return;
 		}
 

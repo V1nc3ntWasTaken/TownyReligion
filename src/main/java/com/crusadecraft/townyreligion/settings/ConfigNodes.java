@@ -27,10 +27,14 @@ public enum ConfigNodes {
 	TOWNY_RELIGION_ENABLED(
 			"townyreligion.enabled",
 			"true",
-			"",
 			"# If this value is true, then TownyReligion is enabled."),
 	TOWNY_RELIGION_RELIGION_HEADER("townyreligion.religion", "", ""),
 	TOWNY_RELIGION_RELIGION_NAME_HEADER("townyreligion.religion.name", "", ""),
+	TOWNY_RELIGION_RELIGION_NAME_BLACKLISTED(
+			"townyreligion.religion.name.blacklisted_names",
+			"owner:god",
+			"# Religion names to blacklist. Not case sensative",
+			"# Separated by colon (:)."),
 	TOWNY_RELIGION_RELIGION_NAME_MAX_LENGTH(
 			"townyreligion.religion.name.max_length",
 			"20",
@@ -47,7 +51,6 @@ public enum ConfigNodes {
 	TOWNY_RELIGION_RELIGION_BOARD_MAX_LENGTH(
 			"townyreligion.religion.board.max_length",
 			"200",
-			"",
 			"# The maximum length a religion board message can be.",
 			"# Set to -1 to disable."),
 	TOWNY_RELIGION_RELIGION_BOARD_MIN_LENGTH(
@@ -65,7 +68,6 @@ public enum ConfigNodes {
 	TOWNY_RELIGION_RELIGION_PRICES_CREATION_PRICE(
 			"townyreligion.religion.prices.creation_price",
 			"20",
-			"",
 			"# How much it should cost to create a religion.",
 			"# Set to 0 to disable."),
 	TOWNY_RELIGION_RELIGION_PRICES_RENAME_PRICE(

@@ -37,8 +37,16 @@ public class ReligionUtils {
 				newReligion.equalsIgnoreCase("invite") ||
 				newReligion.equalsIgnoreCase("set") ||
 				newReligion.equalsIgnoreCase("toggle") ||
-				newReligion.equalsIgnoreCase("townlist")
+				newReligion.equalsIgnoreCase("townlist") ||
+				newReligion.equalsIgnoreCase("kick") ||
+				newReligion.equalsIgnoreCase("say") ||
+				newReligion.equalsIgnoreCase("here") ||
+				newReligion.equalsIgnoreCase("ally") ||
+				newReligion.equalsIgnoreCase("enemy")
 		)
+			throw new Exception(Translation.of("msg_err_invalid_characters"));
+
+		if (TownyReligionSettings.getReligionBlacklistedNames().contains(newReligion.toLowerCase(Locale.ROOT)))
 			throw new Exception(Translation.of("msg_err_invalid_characters"));
 
 		if (newReligion.startsWith("_"))
